@@ -1,0 +1,11 @@
+{
+	"name": "signal",
+	"url": "https://github.com/peteshand/signal",
+	"license": "MIT",
+	"tags": ["signal", "events"],
+	"description": "A simple and super light weight event system replacement.",
+	"version": "1.0.0",
+	"releasenote": "initial commit",
+	"contributors": [ "p.j.shand" ],
+	"classPath": "src"
+}
