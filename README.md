@@ -2,12 +2,12 @@
 
 A simple and light weight event system replacement.
 
-##Performance
+## Performance
 
 ![performance](readme/performance.jpg)
 
 
-##API
+## API
 
 
 The API is based off massiveinteractive's msignal and Robert Penner’s AS3 Signals, however is greatly simplified.
