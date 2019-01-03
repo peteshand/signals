@@ -1,6 +1,6 @@
 {
-	"name": "signal",
-	"url": "https://github.com/peteshand/signal",
+	"name": "signals",
+	"url": "https://github.com/peteshand/signals",
 	"license": "MIT",
 	"tags": ["signal", "events"],
 	"description": "A simple and super light weight event system replacement.",
