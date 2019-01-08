@@ -32,9 +32,10 @@ class BaseSignal<Callback>
 	public var numListeners(get, null):Int;
 
 	var callbacks:Array<SignalCallbackData> = [];
+	var toTrigger:Array<Callback> = [];
 	var requiresSort:Bool = false;
 	var priorityUsed:Bool = false;
-
+	
 	public function new()
 	{
 
@@ -54,13 +55,26 @@ class BaseSignal<Callback>
 		while (i < callbacks.length) {
 			var callbackData = callbacks[i];
 			callbackData.callCount++;
-			dispatchCallback(callbackData.callback);
-			if (callbackData.fireOnce == true){
-				callbacks.splice(i, 1);
-			} else {
-				i++;
-			}
+			//dispatchCallback(callbackData.callback);
+			toTrigger.push(callbackData.callback);
+			if (callbackData.fireOnce == true) callbackData.remove = true;
+			i++;
 		}
+
+		// remove single dispatchers
+		var j:Int = callbacks.length - 1;
+		while (j >= 0) {
+			var callbackData = callbacks[j];
+			if (callbackData.remove == true){
+				callbacks.splice(j, 1);
+			}
+			j--;
+		}
+
+		for (i in 0...toTrigger.length){
+			if (toTrigger[i] != null) dispatchCallback(toTrigger[i]);
+		}
+		toTrigger = [];
 	}
 
 	function dispatchCallback(callback:Callback)
@@ -86,7 +100,8 @@ class BaseSignal<Callback>
 			callback:callback,
 			callCount:0,
 			fireOnce:fireOnce,
-			priority:priority
+			priority:priority,
+			remove:false
 		});
 		if (priority != 0) priorityUsed = true;
 		if (priorityUsed == true) requiresSort = true;
@@ -97,12 +112,12 @@ class BaseSignal<Callback>
 		if (callback == null){
 			callbacks = [];
 		} else {
-			var i:Int = 0;
-			while (i < callbacks.length) {
-				if (callbacks[i].callback == callback){
-					callbacks.splice(i, 1);
+			var j:Int = 0;
+			while (j < callbacks.length) {
+				if (callbacks[j].callback == callback){
+					callbacks.splice(j, 1);
 				} else {
-					i++;
+					j++;
 				}
 			}
 		}
@@ -115,5 +130,6 @@ typedef SignalCallbackData =
 	callback:Dynamic,
 	callCount:Int,
 	fireOnce:Bool,
-	priority:Int
+	priority:Int,
+	remove:Bool
 }
