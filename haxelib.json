@@ -4,8 +4,8 @@
 	"license": "MIT",
 	"tags": ["signal", "events"],
 	"description": "A simple and super light weight event system replacement.",
-	"version": "1.0.0",
-	"releasenote": "initial release",
+	"version": "1.0.1",
+	"releasenote": "fix remove issue",
 	"contributors": [ "p.j.shand" ],
 	"classPath": "src"
 }
