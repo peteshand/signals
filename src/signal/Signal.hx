@@ -30,7 +30,7 @@ class Signal extends BaseSignal<Void -> Void>
 class BaseSignal<Callback>
 {
 	public var numListeners(get, null):Int;
-
+	public var fireOnAdd:Bool = false;
 	var callbacks:Array<SignalCallbackData> = [];
 	var toTrigger:Array<Callback> = [];
 	var requiresSort:Bool = false;
@@ -94,7 +94,7 @@ class BaseSignal<Callback>
 		return callbacks.length;
 	}
 
-	public function add(callback:Callback, ?fireOnce:Bool=false, ?priority:Int = 0):Void
+	public function add(callback:Callback, ?fireOnce:Bool=false, ?priority:Int = 0, ?fireOnAdd:Null<Bool> = null):Void
 	{
 		callbacks.push({
 			callback:callback,
@@ -105,6 +105,7 @@ class BaseSignal<Callback>
 		});
 		if (priority != 0) priorityUsed = true;
 		if (priorityUsed == true) requiresSort = true;
+		if (fireOnAdd == true || this.fireOnAdd == true) dispatchCallback(callback);
 	}
 
 	public function remove(callback:Callback=null):Void
