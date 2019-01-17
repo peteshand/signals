@@ -93,13 +93,13 @@ function example()
 
 ### Remove All
 
-To remove all listeners on a signal simple call the remove function with no argument
+To remove all listeners on a signal simple call the remove function with true as the argument
 
 ```haxe
 var signal = new Signal();
 signal.add(example);
 signal.dispatch();
-signal.remove();
+signal.remove(true);
 signal.dispatch();
 
 function example()

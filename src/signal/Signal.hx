@@ -13,6 +13,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package signal;
 
+import haxe.extern.EitherType;
+
 class Signal extends BaseSignal<Void -> Void>
 {
 	public function dispatch()
@@ -108,9 +110,9 @@ class BaseSignal<Callback>
 		if (fireOnAdd == true || this.fireOnAdd == true) dispatchCallback(callback);
 	}
 
-	public function remove(callback:Callback=null):Void
+	public function remove(callback:EitherType<Bool, Callback>=false):Void
 	{
-		if (callback == null){
+		if (callback == true){
 			callbacks = [];
 		} else {
 			var j:Int = 0;
@@ -134,3 +136,5 @@ typedef SignalCallbackData =
 	priority:Int,
 	remove:Bool
 }
+
+typedef Signal0 = Signal
