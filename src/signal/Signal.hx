@@ -120,10 +120,10 @@ class BaseSignal<Callback>
 		});
 		if (priority != 0) priorityUsed = true;
 		if (priorityUsed == true) requiresSort = true;
-		checkFireOnAdd(callback, fireOnce);
+		checkFireOnAdd(callback, fireOnAdd);
 	}
 
-	function checkFireOnAdd(callback:Callback, fireOnce:Bool)
+	function checkFireOnAdd(callback:Callback, fireOnAdd:Bool)
 	{
 		if (fireOnAdd == true || this.fireOnAdd == true) dispatchCallback(callback);
 	}
