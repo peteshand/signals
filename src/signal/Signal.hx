@@ -14,6 +14,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package signal;
 
 import haxe.extern.EitherType;
+/**
+ *  The API is based off massiveinteractive's msignal and Robert Penner’s AS3 Signals, however is greatly simplified.
+ */
 
 class Signal extends BaseSignal<Void -> Void>
 {
@@ -38,9 +41,9 @@ class BaseSignal<Callback>
 	var requiresSort:Bool = false;
 	var priorityUsed:Bool = false;
 	
-	public function new()
+	public function new(fireOnAdd:Bool=false)
 	{
-
+		this.fireOnAdd = fireOnAdd;
 	}
 
 	inline function sortPriority()
@@ -73,8 +76,8 @@ class BaseSignal<Callback>
 			j--;
 		}
 
-		for (i in 0...toTrigger.length){
-			if (toTrigger[i] != null) dispatchCallback(toTrigger[i]);
+		for (l in 0...toTrigger.length) {
+			if (toTrigger[l] != null) dispatchCallback(toTrigger[l]);
 		}
 		toTrigger = [];
 	}
@@ -96,6 +99,16 @@ class BaseSignal<Callback>
 		return callbacks.length;
 	}
 
+	/**
+	 * Use the .add method to register callbacks to be fired upon signal.dispatch
+	 * 
+	 * @param callback A callback function which will be called when the signal's ditpatch method is fired.
+	 * @param fireOnce An optional Bool that if set to true will only fire once before removing itself. Default value = false.
+	 * @param priority An optional Int that specifies the priority the order in which callbacks are fired, higher values will be triggered first. 
+	 * @param fireOnAdd An optional Bool that if set to true will immediately call the callback. The default value is false.
+	 * 
+	 * @return Void
+	 */
 	public function add(callback:Callback, ?fireOnce:Bool=false, ?priority:Int = 0, ?fireOnAdd:Null<Bool> = null):Void
 	{
 		callbacks.push({
@@ -107,6 +120,11 @@ class BaseSignal<Callback>
 		});
 		if (priority != 0) priorityUsed = true;
 		if (priorityUsed == true) requiresSort = true;
+		checkFireOnAdd(callback);
+	}
+
+	function checkFireOnAdd(callback:Callback)
+	{
 		if (fireOnAdd == true || this.fireOnAdd == true) dispatchCallback(callback);
 	}
 
