@@ -35,6 +35,8 @@ class Signal extends BaseSignal<Void -> Void>
 class BaseSignal<Callback>
 {
 	public var numListeners(get, null):Int;
+	public var hasListeners(get, null):Bool;
+
 	public var fireOnAdd:Bool = false;
 	var callbacks:Array<SignalCallbackData> = [];
 	var toTrigger:Array<Callback> = [];
@@ -94,10 +96,8 @@ class BaseSignal<Callback>
 		else return 0;
 	}
 
-	function get_numListeners()
-	{
-		return callbacks.length;
-	}
+	function get_numListeners() { return callbacks.length; }
+	function get_hasListeners() { return numListeners > 0; }
 
 	/**
 	 * Use the .add method to register callbacks to be fired upon signal.dispatch

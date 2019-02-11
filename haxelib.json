@@ -4,8 +4,8 @@
 	"license": "MIT",
 	"tags": ["signal", "events"],
 	"description": "A simple and super light weight event system replacement.",
-	"version": "1.0.6",
-	"releasenote": "minor .add fireOnAdd fix",
+	"version": "1.0.7",
+	"releasenote": "add hasListener getter",
 	"contributors": [ "p.j.shand" ],
 	"classPath": "src"
 }
