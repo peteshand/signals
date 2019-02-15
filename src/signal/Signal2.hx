@@ -18,5 +18,7 @@ class Signal2<T, K> extends BaseSignal<(T, K) -> Void>
 	override function dispatchCallback(callback:(T, K) -> Void)
 	{
 		callback(value1, value2);
+		value1 = null;
+		value2 = null;
 	}
 }
