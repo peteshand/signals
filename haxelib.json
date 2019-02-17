@@ -4,8 +4,8 @@
 	"license": "MIT",
 	"tags": ["signal", "events"],
 	"description": "A simple and super light weight event system replacement.",
-	"version": "1.0.8",
-	"releasenote": "clear values after dispatch",
+	"version": "1.0.9",
+	"releasenote": "fix value clearing after dispatch when there are multiple listeners",
 	"contributors": [ "p.j.shand" ],
 	"classPath": "src"
 }

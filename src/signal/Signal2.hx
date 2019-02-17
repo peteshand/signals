@@ -13,12 +13,12 @@ class Signal2<T, K> extends BaseSignal<(T, K) -> Void>
 		this.value1 = value1;
 		this.value2 = value2;
 		dispatchCallbacks();
+		value1 = null;
+		value2 = null;
 	}
 
 	override function dispatchCallback(callback:(T, K) -> Void)
 	{
 		callback(value1, value2);
-		value1 = null;
-		value2 = null;
 	}
 }

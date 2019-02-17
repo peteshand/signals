@@ -11,11 +11,11 @@ class Signal1<T> extends BaseSignal<(T) -> Void>
 		sortPriority();
 		this.value = value1;
 		dispatchCallbacks();
+		value = null;
 	}
 
 	override function dispatchCallback(callback:(T) -> Void)
 	{
 		callback(value);
-		value = null;
 	}
 }
