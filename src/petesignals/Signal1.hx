@@ -1,6 +1,6 @@
-package signal;
+package petesignals;
 
-import signal.Signal.BaseSignal;
+import petesignals.Signal.BaseSignal;
 
 class Signal1<T> extends BaseSignal<(T) -> Void>
 {
