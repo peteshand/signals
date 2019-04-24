@@ -10,8 +10,11 @@ package signal;
 
 import signals.Signal as Signal_;
 import signals.Signal.BaseSignal as BaseSignal_;
+import signals.Signal.Signal0 as Signal0;
 
 typedef Signal = Signal_;
+typedef Signal0 = Signal_;
+typedef BaseSignal<Callback> = BaseSignal_<Callback>;
 
 /*
  * It would be nice to be able to use an abstract with a warning, 
@@ -28,5 +31,3 @@ abstract Signal(Signal_) from Signal_ to Signal_
 	}
 }
 */
-
-typedef BaseSignal<Callback> = BaseSignal_<Callback>;
