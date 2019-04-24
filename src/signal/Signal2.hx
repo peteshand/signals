@@ -1,24 +1,29 @@
 package signal;
 
-import signal.Signal.BaseSignal;
+/*
+ * Due to incompatibilities with the CPP Mac target the 
+ * "signal" package has been deprecated in favour of "signals",
+ * 
+ * Warning: The "signal" package will be removed in a future release, it is recommended 
+ * to switch to the "signals" package to avoid future incompatibility issues.
+*/
 
-class Signal2<T, K> extends BaseSignal<(T, K) -> Void>
+import signals.Signal2 as Signal2_;
+
+typedef Signal2<T, K> = Signal2_<T, K>;
+
+/*
+ * It would be nice to be able to use an abstract with a warning, 
+ * however seeing as you can't extend abstract this isn't feasible
+*/
+/*
+@:forward
+abstract Signal2<T, K>(Signal2_<T, K>) from Signal2_<T, K> to Signal2_<T, K>
 {
-	public var value1:T;
-    public var value2:K;
-
-	public function dispatch(value1:T, value2:K)
+	public inline function new(value:Signal2_<T, K>)
 	{
-		sortPriority();
-		this.value1 = value1;
-		this.value2 = value2;
-		dispatchCallbacks();
-		value1 = null;
-		value2 = null;
-	}
-
-	override function dispatchCallback(callback:(T, K) -> Void)
-	{
-		callback(value1, value2);
+		trace('Warning: The "signal" package will be removed in a future release,\nPlease which to the "signals" package to avoid incompatibility issues.');
+		this = value;
 	}
 }
+*/

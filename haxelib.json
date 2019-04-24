@@ -2,10 +2,10 @@
 	"name": "signals",
 	"url": "https://github.com/peteshand/signals",
 	"license": "MIT",
-	"tags": ["signal", "events"],
+	"tags": ["signal", "signals", "events"],
 	"description": "A simple and super light weight event system replacement.",
-	"version": "1.0.9",
-	"releasenote": "fix value clearing after dispatch when there are multiple listeners",
+	"version": "1.1.0",
+	"releasenote": "Address osx cpp package incompatibilities issues",
 	"contributors": [ "p.j.shand" ],
 	"classPath": "src"
 }

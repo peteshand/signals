@@ -1,0 +1,10 @@
+-debug
+-D advanced-telemetry
+
+--remap signal:signals
+
+-lib signals 
+
+-cp ./
+-main BasicExample 
+-cpp bin/cpp
