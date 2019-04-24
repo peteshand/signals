@@ -17,6 +17,7 @@ typedef Signal = Signal_;
  * It would be nice to be able to use an abstract with a warning, 
  * however seeing as you can't extend abstract this isn't feasible
 */
+/*
 @:forward
 abstract Signal(Signal_) from Signal_ to Signal_
 {
