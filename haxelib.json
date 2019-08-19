@@ -4,8 +4,8 @@
 	"license": "MIT",
 	"tags": ["signal", "signals", "events"],
 	"description": "A simple and super light weight event system replacement.",
-	"version": "1.1.1",
-	"releasenote": "Address osx cpp package incompatibilities issues, add missing Signal0 typedef",
+	"version": "1.2.0",
+	"releasenote": "WARNING! Breaking change. add method function signature has changed, please be careful when upgrading",
 	"contributors": [ "p.j.shand" ],
 	"classPath": "src"
 }

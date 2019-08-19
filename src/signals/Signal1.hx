@@ -2,7 +2,11 @@ package signals;
 
 import signals.Signal.BaseSignal;
 
+#if (haxe_ver >= 4.0)
 class Signal1<T> extends BaseSignal<(T) -> Void>
+#else
+class Signal1<T> extends BaseSignal<T -> Void>
+#end
 {
     public var value:T;
 
