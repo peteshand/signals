@@ -33,15 +33,15 @@ class BaseSignal<Callback> {
 	public var numListeners(get, null):Int;
 	public var hasListeners(get, null):Bool;
 
-	public var fireOnAdd:Bool = false;
+	public var _fireOnAdd:Bool = false;
 
+	var currentCallback:SignalCallbackData;
 	var callbacks:Array<SignalCallbackData> = [];
 	var toTrigger:Array<Callback> = [];
 	var requiresSort:Bool = false;
-	var priorityUsed:Bool = false;
 
 	public function new(fireOnAdd:Bool = false) {
-		this.fireOnAdd = fireOnAdd;
+		this._fireOnAdd = fireOnAdd;
 	}
 
 	inline function sortPriority() {
@@ -111,30 +111,77 @@ class BaseSignal<Callback> {
 	 * @param repeat An optional Int that defines the number of times the callback should be triggered before removing itself. Default value = -1 which means it will not remove itself.
 	 * @param priority An optional Int that specifies the priority the order in which callbacks are fired, higher values will be triggered first.
 	 *
-	 * @return Void
+	 * @return BaseSignal<Callback>
 	 */
-	public function add(callback:Callback, ?fireOnAdd:Null<Bool> = null, ?repeat:Int = -1, ?priority:Int = 0):Void {
-		// trace("fireOnAdd = " + fireOnAdd + " repeat = " + repeat);
-		if (fireOnAdd == true && repeat == -1) {
-			trace("test");
+	public function add(callback:Callback, ?fireOnce:Bool = false, ?priority:Int = 0, ?fireOnAdd:Null<Bool> = null):BaseSignal<Callback> {
+		if (fireOnce != false || priority != 0 || fireOnAdd != null) {
+			var warningMessage:String = "\nWARNING: fireOnce, priority and fireOnAdd params will be removed from 'Signals' in a future release\nInstead use daisy chain methods, eg: obj.add(callback).repeat(5).priority(1000).fireOnAdd();";
+			#if js
+			js.Browser.console.warn(warningMessage);
+			#else
+			trace(warningMessage);
+			#end
 		}
-		callbacks.push({
+
+		var repeat:Int = -1;
+		if (fireOnce == true)
+			repeat = 0;
+		currentCallback = {
 			callback: callback,
 			callCount: 0,
 			repeat: repeat,
 			priority: priority,
 			remove: false
-		});
+		}
+		callbacks.push(currentCallback);
+
 		if (priority != 0)
-			priorityUsed = true;
-		if (priorityUsed == true)
 			requiresSort = true;
-		checkFireOnAdd(callback, fireOnAdd);
+
+		if (fireOnAdd == true || this._fireOnAdd == true)
+			dispatchCallback(callback);
+		return this;
 	}
 
-	function checkFireOnAdd(callback:Callback, fireOnAdd:Bool) {
-		if (fireOnAdd == true || this.fireOnAdd == true)
-			dispatchCallback(callback);
+	/**
+	 * Use the .priority method to specifies the priority the order in which callbacks are fired, higher values will be triggered first.
+	 *
+	 * @param value An optional Int that specifies the priority the order in which callbacks are fired, higher values will be triggered first.
+	 *
+	 * @return BaseSignal<Callback>
+	 */
+	public function priority(value:Int):BaseSignal<Callback> {
+		if (currentCallback == null)
+			return this;
+		currentCallback.priority = value;
+		// priorityUsed = true;
+		requiresSort = true;
+		return this;
+	}
+
+	/**
+	 * Use the .repeat method to define the number of times the callback should be triggered before removing itself. Default value = -1 which means it will not remove itself.
+	 *
+	 * @param value An Int that specifies the number of repeats before automatically removing itself.
+	 *
+	 * @return BaseSignal<Callback>
+	 */
+	public function repeat(value:Int = -1):BaseSignal<Callback> {
+		if (currentCallback == null)
+			return this;
+		currentCallback.repeat = value;
+		return this;
+	}
+
+	/**
+	 * Use the .fireOnAdd method that if called will immediately call the most recently added callback.
+	 *
+	 * @return Void
+	 */
+	public function fireOnAdd():Void {
+		if (currentCallback == null)
+			return;
+		dispatchCallback(currentCallback.callback);
 	}
 
 	public function remove(callback:EitherType<Bool, Callback> = false):Void {

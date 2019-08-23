@@ -4,8 +4,8 @@
 	"license": "MIT",
 	"tags": ["signal", "signals", "events"],
 	"description": "A simple and super light weight event system replacement.",
-	"version": "1.2.0",
-	"releasenote": "WARNING! Breaking change. add method function signature has changed, please be careful when upgrading",
+	"version": "1.2.1",
+	"releasenote": "signature update warning added to 'add' method and new daisy chain methods added (repeat priority fireOnAdd)",
 	"contributors": [ "p.j.shand" ],
 	"classPath": "src"
 }
