@@ -44,7 +44,7 @@ signal.dispatch(5, "example");
 
 ```haxe
 var signal = new Signal();
-signal.add(() -> { trace('fire'); }, true);
+signal.add(() -> { trace('fire'); }).repeat(0);
 signal.dispatch();
 signal.dispatch();
 
@@ -56,8 +56,8 @@ signal.dispatch();
 
 ```haxe
 var signal = new Signal();
-signal.add(() -> { trace('Priority 100'); }, 100);
-signal.add(() -> { trace('Priority 500'); }, 500);
+signal.add(() -> { trace('Priority 100'); }).priority(100);
+signal.add(() -> { trace('Priority 500'); }).priority(500);
 signal.dispatch();
 
 // output 
@@ -70,8 +70,21 @@ signal.dispatch();
 
 ```haxe
 var signal = new Signal();
-signal.add(() -> { /* do something */ }, true, 500);
+signal.add(() -> { trace('Priority 100'); }).repeat(0).priority(100);
+signal.add(() -> { trace('Priority 500'); }).repeat(0).priority(500);
 signal.dispatch();
+signal.dispatch();
+```
+
+### Fire Callback when registering
+
+```haxe
+var signal = new Signal();
+signal.add(() -> { trace('Priority 100'); }).priority(100).fireOnAdd();
+// output 'Priority 100'
+signal.add(() -> { trace('Priority 500'); }).priority(500);
+signal.dispatch();
+// output 'Priority 500'
 ```
 
 ### Remove Listener

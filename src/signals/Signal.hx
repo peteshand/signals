@@ -18,7 +18,12 @@ import haxe.extern.EitherType;
 /**
  *  The API is based off massiveinteractive's msignal and Robert Penner’s AS3 Signals, however is greatly simplified.
  */
+@:expose("Signal")
 class Signal extends BaseSignal<Void->Void> {
+	public function new(?fireOnAdd:Bool = false) {
+		super(fireOnAdd);
+	}
+
 	public function dispatch() {
 		sortPriority();
 		dispatchCallbacks();
@@ -29,7 +34,23 @@ class Signal extends BaseSignal<Void->Void> {
 	}
 }
 
+@:expose("BaseSignal")
 class BaseSignal<Callback> {
+	#if js
+	@:noCompletion private static function __init__() {
+		untyped Object.defineProperties(BaseSignal.prototype, {
+			"numListeners": {
+				get: untyped __js__("function () { return this.get_numListeners (); }"),
+				set: untyped __js__("function (v) { return this.set_numListeners (v); }")
+			},
+			"hasListeners": {
+				get: untyped __js__("function () { return this.get_hasListeners (); }"),
+				set: untyped __js__("function (v) { return this.set_hasListeners (v); }")
+			},
+		});
+	}
+	#end
+
 	public var numListeners(get, null):Int;
 	public var hasListeners(get, null):Bool;
 
@@ -40,7 +61,7 @@ class BaseSignal<Callback> {
 	var toTrigger:Array<Callback> = [];
 	var requiresSort:Bool = false;
 
-	public function new(fireOnAdd:Bool = false) {
+	public function new(?fireOnAdd:Bool = false) {
 		this._fireOnAdd = fireOnAdd;
 	}
 
@@ -55,13 +76,12 @@ class BaseSignal<Callback> {
 		var i:Int = 0;
 		while (i < callbacks.length) {
 			var callbackData = callbacks[i];
-			callbackData.callCount++;
-			// dispatchCallback(callbackData.callback);
-			toTrigger.push(callbackData.callback);
-
-			if (callbackData.repeat >= 0 && callbackData.callCount >= callbackData.repeat)
+			if (callbackData.repeat < 0 || callbackData.callCount <= callbackData.repeat) {
+				toTrigger.push(callbackData.callback);
+			} else {
 				callbackData.remove = true;
-			// if (callbackData.fireOnce == true) callbackData.remove = true;
+			}
+			callbackData.callCount++;
 			i++;
 		}
 
@@ -117,7 +137,7 @@ class BaseSignal<Callback> {
 		if (fireOnce != false || priority != 0 || fireOnAdd != null) {
 			var warningMessage:String = "\nWARNING: fireOnce, priority and fireOnAdd params will be removed from 'Signals' in a future release\nInstead use daisy chain methods, eg: obj.add(callback).repeat(5).priority(1000).fireOnAdd();";
 			#if js
-			js.Browser.console.warn(warningMessage);
+			untyped __js__('console.warn(warningMessage)');
 			#else
 			trace(warningMessage);
 			#end
@@ -181,6 +201,7 @@ class BaseSignal<Callback> {
 	public function fireOnAdd():Void {
 		if (currentCallback == null)
 			return;
+		currentCallback.callCount++;
 		dispatchCallback(currentCallback.callback);
 	}
 
