@@ -32,6 +32,14 @@ class Signal extends BaseSignal<Void->Void> {
 	override function dispatchCallback(callback:Void->Void) {
 		callback();
 	}
+
+	override function dispatchCallback1(callback:Dynamic->Void) {
+		throw "Use Signal 1";
+	}
+
+	override function dispatchCallback2(callback:Dynamic->Dynamic->Void) {
+		throw "Use Signal 2";
+	}
 }
 
 @:expose("BaseSignal")
@@ -58,7 +66,7 @@ class BaseSignal<Callback> {
 
 	var currentCallback:SignalCallbackData;
 	var callbacks:Array<SignalCallbackData> = [];
-	var toTrigger:Array<Callback> = [];
+	var toTrigger:Array<SignalCallbackData> = [];
 	var requiresSort:Bool = false;
 
 	public function new(?fireOnAdd:Bool = false) {
@@ -77,7 +85,7 @@ class BaseSignal<Callback> {
 		while (i < callbacks.length) {
 			var callbackData = callbacks[i];
 			if (callbackData.repeat < 0 || callbackData.callCount <= callbackData.repeat) {
-				toTrigger.push(callbackData.callback);
+				toTrigger.push(callbackData);
 			} else {
 				callbackData.remove = true;
 			}
@@ -96,14 +104,23 @@ class BaseSignal<Callback> {
 		}
 
 		for (l in 0...toTrigger.length) {
-			if (toTrigger[l] != null)
-				dispatchCallback(toTrigger[l]);
+			if (toTrigger[l] != null) {
+				toTrigger[l].dispatchMethod(toTrigger[l].callback);
+			}
 		}
 		toTrigger = [];
 	}
 
-	function dispatchCallback(callback:Callback) {
-		// implement in override
+	function dispatchCallback(callback:Void->Void) {
+		throw "implement in override";
+	}
+
+	function dispatchCallback1(callback:Dynamic->Void) {
+		throw "implement in override";
+	}
+
+	function dispatchCallback2(callback:Dynamic->Dynamic->Void) {
+		throw "implement in override";
 	}
 
 	function sortCallbacks(s1:SignalCallbackData, s2:SignalCallbackData):Int {
@@ -143,24 +160,73 @@ class BaseSignal<Callback> {
 			#end
 		}
 
+		var numParams:Int = getNumParams(callback);
 		var repeat:Int = -1;
 		if (fireOnce == true)
 			repeat = 0;
 		currentCallback = {
+			params: numParams,
 			callback: callback,
 			callCount: 0,
 			repeat: repeat,
 			priority: priority,
 			remove: false
 		}
+		if (numParams == 0) {
+			currentCallback.dispatchMethod = dispatchCallback;
+		} else if (numParams == 1) {
+			currentCallback.dispatchMethod = dispatchCallback1;
+		} else if (numParams == 2) {
+			currentCallback.dispatchMethod = dispatchCallback2;
+		}
+
 		callbacks.push(currentCallback);
 
 		if (priority != 0)
 			requiresSort = true;
 
-		if (fireOnAdd == true || this._fireOnAdd == true)
-			dispatchCallback(callback);
+		if (fireOnAdd == true || this._fireOnAdd == true) {
+			currentCallback.dispatchMethod(callback);
+		}
+
 		return this;
+	}
+
+	function getNumParams(callback:Callback):Int {
+		var length:Null<Int> = Reflect.getProperty(callback, 'length');
+		if (length != null) {
+			return length;
+		} else {
+			throw "length not supported";
+		}
+		/*
+			var c0:Void->Void = () -> {};
+			var c1:Dynamic->Void = (d:Dynamic) -> {};
+			var c2:Dynamic->Dynamic->Void = (d1:Dynamic, d2:Dynamic) -> {};
+
+			trace(c0 == untyped callback);
+			trace(c1 == untyped callback);
+			trace(c2 == untyped callback);
+			try {
+				c2 = untyped callback;
+			} catch (e:Dynamic) {
+				try {
+					c1 = untyped callback;
+				} catch (e:Dynamic) {
+					try {
+						c0 = untyped callback;
+					} catch (e:Dynamic) {}
+				}
+			}
+			if (c0 != null)
+				return 0;
+			else if (c1 != null)
+				return 1;
+			else if (c2 != null)
+				return 2;
+			else
+				return -1;
+		 */
 	}
 
 	/**
@@ -202,7 +268,7 @@ class BaseSignal<Callback> {
 		if (currentCallback == null)
 			return;
 		currentCallback.callCount++;
-		dispatchCallback(currentCallback.callback);
+		currentCallback.dispatchMethod(currentCallback.callback);
 	}
 
 	public function remove(callback:EitherType<Bool, Callback> = false):Void {
@@ -224,9 +290,11 @@ class BaseSignal<Callback> {
 typedef SignalCallbackData = {
 	callback:Dynamic,
 	callCount:Int,
+	params:Int,
 	repeat:Int,
 	priority:Int,
-	remove:Bool
+	remove:Bool,
+	?dispatchMethod:Dynamic->Void
 }
 
 typedef Signal0 = Signal
