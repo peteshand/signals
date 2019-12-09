@@ -4,8 +4,8 @@
 	"license": "MIT",
 	"tags": ["signal", "signals", "events"],
 	"description": "A simple and super light weight event system replacement.",
-	"version": "1.2.4",
-	"releasenote": "update js getter/setter output",
+	"version": "1.2.6",
+	"releasenote": "add @:deprecated to deprecated APIs",
 	"contributors": [ "p.j.shand" ],
 	"classPath": "src"
 }

@@ -1,6 +1,6 @@
 package signals;
 
-import signals.BaseSignal;
+import signals.Signal.BaseSignal;
 
 @:expose("Signal1")
 #if (haxe_ver >= 4.0)
