@@ -27,6 +27,10 @@ class Signal1<T> extends BaseSignal<Func0or1<T>> {
 	override function dispatchCallback2(callback:Dynamic->Dynamic->Void) {
 		throw "Use Signal 2";
 	}
+
+	override function dispatchCallback3(callback:Dynamic->Dynamic->Dynamic->Void) {
+		throw "Use Signal 3";
+	}
 }
 
 // Void->Void // T->Void

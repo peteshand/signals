@@ -40,6 +40,10 @@ class Signal extends BaseSignal<Void->Void> {
 	override function dispatchCallback2(callback:Dynamic->Dynamic->Void) {
 		throw "Use Signal 2";
 	}
+
+	override function dispatchCallback3(callback:Dynamic->Dynamic->Dynamic->Void) {
+		throw "Use Signal 3";
+	}
 }
 
 @:expose("BaseSignal")
@@ -123,6 +127,10 @@ class BaseSignal<Callback> {
 		throw "implement in override";
 	}
 
+	function dispatchCallback3(callback:Dynamic->Dynamic->Dynamic->Void) {
+		throw "implement in override";
+	}
+
 	function sortCallbacks(s1:SignalCallbackData, s2:SignalCallbackData):Int {
 		if (s1.priority > s2.priority)
 			return -1;
@@ -178,6 +186,8 @@ class BaseSignal<Callback> {
 			currentCallback.dispatchMethod = dispatchCallback1;
 		} else if (numParams == 2) {
 			currentCallback.dispatchMethod = dispatchCallback2;
+		} else if(numParams == 3){
+			currentCallback.dispatchMethod = dispatchCallback3;
 		}
 
 		callbacks.push(currentCallback);
