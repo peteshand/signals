@@ -2,23 +2,26 @@ package signals;
 
 import signals.Signal.BaseSignal;
 
-@:expose("Signal2")
-class Signal2<T, K> extends BaseSignal<(T,K)->Void> {
+@:expose("Signal3")
+class Signal3<T, K, I> extends BaseSignal<(T,K,I)->Void> {
 	public var value1:T;
 	public var value2:K;
+	public var value3:I;
 
 	override public function new(){
 		super();
-		this.valence = 2;
+		this.valence = 3;
 	}
 
-	public function dispatch(value1:T, value2:K) {
+	public function dispatch(value1:T, value2:K, value3:I) {
 		sortPriority();
 		this.value1 = value1;
 		this.value2 = value2;
+		this.value3 = value3;
 		dispatchCallbacks();
 		value1 = null;
 		value2 = null;
+		value3 = null;
 	}
 
 	override function dispatchCallback(callback:()->Void) {
@@ -33,7 +36,7 @@ class Signal2<T, K> extends BaseSignal<(T,K)->Void> {
 		callback(value1, value2);
 	}
 
-	override function dispatchCallback3(callback:(Dynamic,Dynamic,Dynamic)->Void) {
-		throw "Use Signal 3";
+	override function dispatchCallback3(callback:(T,K,I)->Void) {
+		callback(value1, value2, value3);
 	}
 }
