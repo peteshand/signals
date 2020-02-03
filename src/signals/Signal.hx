@@ -19,7 +19,8 @@ import haxe.extern.EitherType;
  *  The API is based off massiveinteractive's msignal and Robert Penner’s AS3 Signals, however is greatly simplified.
  */
 @:expose("Signal")
-class Signal extends BaseSignal<Void->Void> {
+class Signal extends BaseSignal<()->Void> {
+
 	public function new(?fireOnAdd:Bool = false) {
 		super(fireOnAdd);
 	}
@@ -29,19 +30,19 @@ class Signal extends BaseSignal<Void->Void> {
 		dispatchCallbacks();
 	}
 
-	override function dispatchCallback(callback:Void->Void) {
+	override function dispatchCallback(callback:()->Void) {
 		callback();
 	}
 
-	override function dispatchCallback1(callback:Dynamic->Void) {
+	override function dispatchCallback1(callback:(Dynamic)->Void) {
 		throw "Use Signal 1";
 	}
 
-	override function dispatchCallback2(callback:Dynamic->Dynamic->Void) {
+	override function dispatchCallback2(callback:(Dynamic, Dynamic)->Void) {
 		throw "Use Signal 2";
 	}
 
-	override function dispatchCallback3(callback:Dynamic->Dynamic->Dynamic->Void) {
+	override function dispatchCallback3(callback:(Dynamic, Dynamic, Dynamic)->Void) {
 		throw "Use Signal 3";
 	}
 }
@@ -72,6 +73,8 @@ class BaseSignal<Callback> {
 	var callbacks:Array<SignalCallbackData> = [];
 	var toTrigger:Array<SignalCallbackData> = [];
 	var requiresSort:Bool = false;
+
+	var valience:Int = 0;
 
 	public function new(?fireOnAdd:Bool = false) {
 		this._fireOnAdd = fireOnAdd;
@@ -115,19 +118,19 @@ class BaseSignal<Callback> {
 		toTrigger = [];
 	}
 
-	function dispatchCallback(callback:Void->Void) {
+	function dispatchCallback(callback:()->Void) {
 		throw "implement in override";
 	}
 
-	function dispatchCallback1(callback:Dynamic->Void) {
+	function dispatchCallback1(callback:(Dynamic)->Void) {
 		throw "implement in override";
 	}
 
-	function dispatchCallback2(callback:Dynamic->Dynamic->Void) {
+	function dispatchCallback2(callback:(Dynamic, Dynamic)->Void) {
 		throw "implement in override";
 	}
 
-	function dispatchCallback3(callback:Dynamic->Dynamic->Dynamic->Void) {
+	function dispatchCallback3(callback:(Dynamic, Dynamic, Dynamic)->Void) {
 		throw "implement in override";
 	}
 
@@ -207,7 +210,8 @@ class BaseSignal<Callback> {
 		if (length != null) {
 			return length;
 		} else {
-			throw "length not supported";
+			return this.valience;
+			//throw "length not supported";
 		}
 		/*
 			var c0:Void->Void = () -> {};
@@ -304,7 +308,7 @@ typedef SignalCallbackData = {
 	repeat:Int,
 	priority:Int,
 	remove:Bool,
-	?dispatchMethod:Dynamic->Void
+	?dispatchMethod:(Dynamic)->Void
 }
 
 typedef Signal0 = Signal
