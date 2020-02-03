@@ -11,7 +11,7 @@ class Signal1<T> extends BaseSignal<Func0or1<T>> {
 
 	override public function new(){
 		super();
-		this.valience = 1;
+		this.valence = 1;
 	}
 
 	public function dispatch(value1:T) {

@@ -10,7 +10,7 @@ class Signal3<T, K, I> extends BaseSignal<(T,K,I)->Void> {
 
 	override public function new(){
 		super();
-		this.valience = 3;
+		this.valence = 3;
 	}
 
 	public function dispatch(value1:T, value2:K, value3:I) {
