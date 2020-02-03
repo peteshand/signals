@@ -206,7 +206,7 @@ class BaseSignal<Callback> {
 	}
 
 	function getNumParams(callback:Callback):Int {
-		#if(!static)
+		#if(flash||js)
 		var length:Null<Int> = Reflect.getProperty(callback, 'length');
 		if (length != null) {
 			return length;
